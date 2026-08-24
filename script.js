@@ -1,5 +1,43 @@
-const username="Gavince";
-document.getElementById("year").textContent=new Date().getFullYear();
-async function hydrateGitHubData(){try{const[profileResponse,reposResponse]=await Promise.all([fetch(`https://api.github.com/users/${username}`),fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`)]);if(!profileResponse.ok||!reposResponse.ok)return;const profile=await profileResponse.json();const repos=await reposResponse.json();const accountYears=Math.max(1,new Date().getFullYear()-new Date(profile.created_at).getFullYear());document.querySelector('[data-stat="repos"]').textContent=profile.public_repos;document.querySelector('[data-stat="years"]').textContent=accountYears;document.querySelectorAll("[data-repo]").forEach(card=>{const repo=repos.find(item=>item.name===card.dataset.repo);if(!repo)return;const stars=card.querySelector(".repo-stars");if(stars)stars.textContent=`★ ${repo.stargazers_count}`})}catch{}}
+const username = "Gavince";
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+async function hydrateGitHubData() {
+  try {
+    const reposResponse = await fetch(
+      `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`,
+    );
+
+    if (!reposResponse.ok) return;
+    const repos = await reposResponse.json();
+
+    document.querySelectorAll("[data-repo]").forEach((card) => {
+      const repo = repos.find((item) => item.name === card.dataset.repo);
+      const stars = card.querySelector(".repo-stars");
+      if (repo && stars) stars.textContent = `★ ${repo.stargazers_count}`;
+    });
+  } catch {
+    // Static fallback values remain visible when GitHub's API is unavailable.
+  }
+}
+
 hydrateGitHubData();
-const revealTargets=document.querySelectorAll(".section-title, .about-copy, blockquote, .stats, .project-card, .skill-group, .contact-links");revealTargets.forEach(element=>element.classList.add("scroll-reveal"));const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add("is-visible");observer.unobserve(entry.target)})},{threshold:.12});revealTargets.forEach(element=>observer.observe(element));
+
+const revealTargets = document.querySelectorAll(
+  ".section-title, .about-copy, blockquote, .stats, .capability-card, .project-card, .writing-grid a, .skill-group, .contact-links",
+);
+
+revealTargets.forEach((element) => element.classList.add("scroll-reveal"));
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    });
+  },
+  { threshold: 0.12 },
+);
+
+revealTargets.forEach((element) => observer.observe(element));
