@@ -24,7 +24,7 @@ async function hydrateGitHubData() {
 hydrateGitHubData();
 
 const revealTargets = document.querySelectorAll(
-  ".section-title, .about-copy, blockquote, .stats, .capability-card, .project-card, .writing-grid a, .skill-group, .contact-links",
+  ".section-title, .proof-strip, .capability-card, .case-study, .writing-grid a, .toolbelt-grid > div, .contact-links",
 );
 
 revealTargets.forEach((element) => element.classList.add("scroll-reveal"));
